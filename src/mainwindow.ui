@@ -13,10 +13,10 @@
   <property name="windowTitle">
    <string>SiteDeltaMonitor</string>
   </property>
-  <widget class="QWidget" name="coreLayout">
-   <layout class="QVBoxLayout" name="verticalLayout_5">
+  <widget class="QWidget" name="container">
+   <layout class="QVBoxLayout" name="layout_Core_V">
     <item>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="layout_Config_G">
       <property name="rightMargin">
        <number>0</number>
       </property>
@@ -24,7 +24,7 @@
        <number>6</number>
       </property>
       <item row="0" column="2">
-       <widget class="QLabel" name="Category_URL">
+       <widget class="QLabel" name="category_URL">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -37,7 +37,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLabel" name="Category_Target">
+       <widget class="QLabel" name="category_Target">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -50,7 +50,7 @@
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="Category_Active">
+       <widget class="QLabel" name="category_Active">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -65,9 +65,9 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="layout_Trailing_H">
       <item>
-       <spacer name="horizontalSpacer">
+       <spacer name="spacer_Left_H">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -80,7 +80,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="Button_AddRow">
+       <widget class="QPushButton" name="button_AddRow">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -99,7 +99,7 @@
        </widget>
       </item>
       <item>
-       <spacer name="horizontalSpacer_2">
+       <spacer name="spacer_Right_H">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -114,7 +114,7 @@
      </layout>
     </item>
     <item>
-     <spacer name="verticalSpacer">
+     <spacer name="spacer_Floor_V">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
@@ -128,7 +128,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QMenuBar" name="menu">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -143,7 +143,7 @@
     </property>
     <addaction name="action_New"/>
    </widget>
-   <widget class="QMenu" name="menu_About">
+   <widget class="QMenu" name="menu_Help">
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -151,7 +151,7 @@
     <addaction name="action_About"/>
    </widget>
    <addaction name="menu_Profiles"/>
-   <addaction name="menu_About"/>
+   <addaction name="menu_Help"/>
   </widget>
   <action name="action_Guide">
    <property name="text">
