@@ -17,12 +17,32 @@
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
-#include "inc/icon.h"
+#ifndef ICON_H
+#define ICON_H
 
-int main(int argc, char* argv[]) {
-	QApplication a(argc, argv);
-	SDM::Icon icon(&a);
-	icon.show();
-	return a.exec();
+#include <QApplication>
+#include <QIcon>
+#include <QMenu>
+#include <QSystemTrayIcon>
+#include "inc/mainwindow.h"
+
+namespace SDM {
+	class Icon: public QSystemTrayIcon {
+		Q_OBJECT
+
+	private:
+		MainWindow* win;
+		QMenu* menu;
+
+	public:
+		Icon(QObject* parent = nullptr);
+		virtual ~Icon();
+
+	public slots:
+		void handleClick(QSystemTrayIcon::ActivationReason reason);
+		void openConfig();
+		void exitConfig();
+	};
 }
+
+#endif // ICON_H

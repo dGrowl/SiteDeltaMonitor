@@ -11,7 +11,7 @@
  * SDM is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Leser General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
@@ -23,21 +23,22 @@
 #include <QMainWindow>
 #include <QCheckBox>
 #include <QLineEdit>
-#include <QPushButton>
+#include <QMessageBox>
 
 namespace Ui {
 	class MainWindow;
 }
 
-class MainWindow : public QMainWindow {
+class MainWindow: public QMainWindow {
 	Q_OBJECT
 
 public:
-	explicit MainWindow(QWidget *parent = nullptr);
+	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow();
 
 private:
-	Ui::MainWindow *ui;
+	Ui::MainWindow* ui;
+	QMessageBox* aboutBox;
 };
 
 #endif // MAINWINDOW_H
