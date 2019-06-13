@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>144</height>
+    <height>140</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,6 +15,19 @@
   </property>
   <widget class="QWidget" name="container">
    <layout class="QVBoxLayout" name="layout_Core_V">
+    <item>
+     <spacer name="spacer_Roof_V">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
     <item>
      <layout class="QGridLayout" name="layout_Config_G">
       <property name="rightMargin">
@@ -32,7 +45,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Target (Blank, #IDs, or .classes)</string>
+         <string>Element (Blank, #ID, or .class)</string>
         </property>
        </widget>
       </item>
@@ -86,14 +99,14 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="button_RemoveRow">
         <property name="text">
          <string>Remove</string>
         </property>
        </widget>
       </item>
       <item>
-       <spacer name="spacer_Right_H">
+       <spacer name="spacer_Buttons">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -106,11 +119,75 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Update Interval: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBox_Hours"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>hours</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBox_Minutes">
+        <property name="maximum">
+         <number>59</number>
+        </property>
+        <property name="value">
+         <number>30</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>minutes</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <spacer name="spacer_SaveL_H">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="button_Save">
         <property name="text">
          <string>Save</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="spacer_SaveR_H">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
@@ -142,8 +219,6 @@
     <property name="title">
      <string>&amp;Profiles</string>
     </property>
-    <addaction name="action_Profile1"/>
-    <addaction name="separator"/>
     <addaction name="action_New"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
@@ -164,22 +239,6 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
-   </property>
-  </action>
-  <action name="action_Profile1">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Profile &amp;1</string>
-   </property>
-  </action>
-  <action name="actionNew">
-   <property name="text">
-    <string>&amp;New</string>
    </property>
   </action>
   <action name="action_New">

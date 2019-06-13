@@ -20,10 +20,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <memory>
 #include <QCheckBox>
+#include <QCloseEvent>
+#include <QFile>
 #include <QLineEdit>
+#include <QMainWindow>
 #include <QMessageBox>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace Ui {
 	class MainWindow;
@@ -32,13 +38,26 @@ namespace Ui {
 class MainWindow: public QMainWindow {
 	Q_OBJECT
 
+private:
+	std::unique_ptr<Ui::MainWindow> ui;
+	QMessageBox* aboutBox;
+	QJsonObject  profiles;
+	QString      currentProfileName;
+
+	void closeEvent(QCloseEvent* event) override;
+	void loadProfiles();
+	void addRow(const bool active = false, const QString url = "", const QString element = "");
+	//	void removeRow(const unsigned i);
+
 public:
 	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow();
 
-private:
-	Ui::MainWindow* ui;
-	QMessageBox* aboutBox;
+public slots:
+	void saveProfiles();
+
+signals:
+	void exit();
 };
 
 #endif // MAINWINDOW_H
