@@ -20,28 +20,40 @@
 #ifndef ICON_H
 #define ICON_H
 
+#include <memory>
 #include <QApplication>
 #include <QIcon>
 #include <QMenu>
+#include <QNetworkAccessManager>
 #include <QSystemTrayIcon>
+#include <QTimer>
 #include "inc/mainwindow.h"
+#include "inc/monitor.h"
+#include "inc/reportwindow.h"
 
 namespace SDM {
 	class Icon: public QSystemTrayIcon {
 		Q_OBJECT
 
 	private:
-		MainWindow* win;
-		QMenu* menu;
+		std::unique_ptr<MainWindow> win;
+		std::unique_ptr<QMenu>      menu;
+		Monitor* monitor;
+		QTimer   timer;
+		void createMenu();
 
 	public:
 		Icon(QObject* parent = nullptr);
 		virtual ~Icon();
 
 	public slots:
-		void handleClick(QSystemTrayIcon::ActivationReason reason);
+		void handleClick(const QSystemTrayIcon::ActivationReason reason);
+		void generateReport(const QString url, const QString previous, const QString current);
 		void openConfig();
 		void exitConfig();
+		void runMonitor();
+		void setActive(bool beActive);
+		void setInterval(const int ms);
 	};
 }
 

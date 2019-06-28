@@ -23,41 +23,99 @@ namespace SDM {
 	Icon::Icon(QObject* parent):
 		QSystemTrayIcon(parent),
 		win(nullptr),
-		menu(new QMenu(nullptr)) {
+		menu(nullptr),
+		monitor(nullptr),
+		timer(this) {
 		setIcon(QIcon(":/res/icon.png"));
-		setContextMenu(menu);
+		createMenu();
 		connect(this, &QSystemTrayIcon::activated, this, &Icon::handleClick);
-		QAction* activeAction = menu->addAction(tr("&Active"));
-		activeAction->setCheckable(true);
-		QAction* optionsAction = menu->addAction(tr("&Options"));
-		menu->addSeparator();
-		QAction* exitAction = menu->addAction(tr("&Exit"));
-		connect(optionsAction, &QAction::triggered, this, &Icon::openConfig);
-		connect(exitAction, &QAction::triggered, QApplication::instance(), &QApplication::quit);
+		timer.callOnTimeout(this, &Icon::runMonitor);
+		int interval = 30 * 60 * 1000; // 30 minute check interval (in milliseconds) by default
+		QFile profilesFile("profiles.json");
+		if (profilesFile.exists()) {
+			profilesFile.open(QIODevice::ReadOnly | QIODevice::Text);
+			QJsonObject profiles = QJsonDocument::fromJson(profilesFile.readAll()).object();
+			for (auto it = profiles.begin(); it != profiles.end(); ++it) {
+				QJsonObject profile = it.value().toObject();
+				if (profile.value("current").toBool() == true) {
+					interval = profile.value("interval").toInt() * 60 * 1000;
+					break;
+				}
+			}
+			profilesFile.close();
+		}
+		setInterval(interval);
+		setActive(true);
 	}
 
-	Icon::~Icon() {
-		delete menu;
-		delete win;
+	Icon::~Icon() {}
+
+	void Icon::createMenu() {
+		try {
+			menu = std::make_unique<QMenu>();
+			setContextMenu(menu.get());
+			QAction* activeAction = menu->addAction("&Active");
+			activeAction->setCheckable(true);
+			activeAction->setChecked(true);
+			QAction* optionsAction = menu->addAction("&Options");
+			menu->addSeparator();
+			QAction* exitAction = menu->addAction("&Exit");
+			connect(activeAction,  &QAction::toggled,   this,                     &Icon::setActive);
+			connect(optionsAction, &QAction::triggered, this,                     &Icon::openConfig);
+			connect(exitAction,    &QAction::triggered, QApplication::instance(), &QApplication::quit);
+		}
+		catch (std::exception& e) {
+			qDebug() << e.what() << "Error: Failed to construct menu for SDM::Icon.";
+			deleteLater();
+		}
 	}
 
-	void Icon::handleClick(QSystemTrayIcon::ActivationReason reason) {
+	void Icon::handleClick(const QSystemTrayIcon::ActivationReason reason) {
 		if (reason == QSystemTrayIcon::DoubleClick) {
 			openConfig();
 		}
 	}
 
+	void Icon::generateReport(const QString url, const QString previous, const QString current) {
+		ReportWindow* report = new ReportWindow(url, previous, current);
+		report->show();
+	}
+
 	void Icon::openConfig() {
 		if (win == nullptr) {
-			win = new MainWindow();
+			win = std::make_unique<MainWindow>();
 			win->setWindowIcon(QIcon(":/res/icon.png"));
+			win->setAttribute(Qt::WA_QuitOnClose, false);
+			connect(win.get(), &MainWindow::exit, this, &Icon::exitConfig);
 		}
 		win->show();
-		// win->activateWindow(); TODO: Refactor QMainWindow
+		win->activateWindow();
 		win->raise();
 	}
 
 	void Icon::exitConfig() {
-		delete win;
+		win->hide();
+		win.reset(nullptr);
+	}
+
+	void Icon::runMonitor() {
+		monitor = new Monitor(this);
+		connect(monitor, &Monitor::difference, this, &Icon::generateReport);
+	}
+
+	void Icon::setActive(bool beActive) {
+		if (beActive) {
+			timer.start();
+		}
+		else {
+			timer.stop();
+		}
+	}
+
+	void Icon::setInterval(const int ms) {
+		timer.stop();
+		timer.setInterval(ms);
+		// TODO: Start or don't based on the menu's &Active action
+		timer.start();
 	}
 }

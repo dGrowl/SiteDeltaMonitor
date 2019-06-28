@@ -17,28 +17,40 @@
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef REPORTWINDOW_H
-#define REPORTWINDOW_H
+#ifndef MONITOR_H
+#define MONITOR_H
 
-#include <memory>
-#include <QDebug>
-#include <QWidget>
-
-namespace Ui {
-	class ReportWindow;
-}
+#include <fstream>
+#include <QFile>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QObject>
+#include <QUrl>
 
 namespace SDM {
-	class ReportWindow: public QWidget {
+	class Monitor: public QObject {
 		Q_OBJECT
 
-	public:
-		explicit ReportWindow(const QString url, const QString previous, const QString current, QWidget* parent = nullptr);
-		virtual ~ReportWindow();
-
 	private:
-		std::unique_ptr<Ui::ReportWindow> ui;
+		QNetworkAccessManager net;
+		QJsonObject history;
+		QHash<QString, QNetworkReply*> tests;
+		void loadHistory();
+		void saveHistory();
+		void loadProfile();
+
+	public:
+		Monitor(QObject* parent = nullptr);
+		virtual ~Monitor();
+		void fetch(const QString urlString);
+		void compare(const QString urlString);
+
+	signals:
+		void difference(const QString url, const QString previous, const QString current);
 	};
 }
 
-#endif // REPORTWINDOW_H
+#endif // MONITOR_H

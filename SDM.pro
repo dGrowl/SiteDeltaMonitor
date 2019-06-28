@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,27 +22,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-CONFIG += c++11
-QMAKE_CXXFLAGS  += -pedantic
-#QMAKE_CXXFLAGS += -Os
-#QMAKE_LFLAGS   += -s
+CONFIG += c++14
+QMAKE_CXXFLAGS         += -pedantic
+QMAKE_CXXFLAGS_RELEASE += -Os
+QMAKE_LFLAGS_RELEASE   += -s
 
 SOURCES += \
-        src/icon.cpp \
         src/main.cpp \
-        src/mainwindow.cpp
+        src/icon.cpp \
+        src/mainwindow.cpp \
+        src/monitor.cpp \
+        src/reportwindow.cpp
 
 HEADERS += \
     inc/icon.h \
-    inc/mainwindow.h
+    inc/mainwindow.h \
+    inc/monitor.h \
+    inc/reportwindow.h
 
 FORMS += \
-    src/mainwindow.ui
+    src/mainwindow.ui \
+    src/reportwindow.ui
+
+RESOURCES += \
+    resources.qrc
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-RESOURCES += \
-    resources.qrc

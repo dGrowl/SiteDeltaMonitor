@@ -119,7 +119,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="label_Interval">
         <property name="text">
          <string>Update Interval: </string>
         </property>
@@ -129,7 +129,7 @@
        <widget class="QSpinBox" name="spinBox_Hours"/>
       </item>
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_Hours">
         <property name="text">
          <string>hours</string>
         </property>
@@ -146,7 +146,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="label_Minutes">
         <property name="text">
          <string>minutes</string>
         </property>

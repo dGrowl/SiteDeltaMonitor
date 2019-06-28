@@ -85,13 +85,16 @@ void MainWindow::loadProfiles() {
 		profilesFile.write(QJsonDocument(profiles).toJson());
 	}
 	profilesFile.close();
+	QActionGroup* profileActions = new QActionGroup(ui->menu_Profiles);
+	profileActions->setExclusive(true);
 	for (auto it = profiles.constBegin(); it != profiles.constEnd(); ++it) {
-		QString profileName     = it.key();
-		QJsonObject profileData = it.value().toObject();
-		QAction* profileAction  = new QAction(profileName, ui->menu_Profiles);
+		QString     profileName   = it.key();
+		QJsonObject profileData   = it.value().toObject();
+		QAction*    profileAction = new QAction(profileName, ui->menu_Profiles);
+		profileAction->setCheckable(true);
+		profileActions->addAction(profileAction);
 		ui->menu_Profiles->insertAction(ui->action_New, profileAction);
 		if (profileData.value("current").toBool()) {
-			profileAction->setCheckable(true);
 			profileAction->setChecked(true);
 			currentProfileName = profileName;
 			QJsonArray targets = profileData.value("targets").toArray();
