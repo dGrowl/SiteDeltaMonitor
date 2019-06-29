@@ -21,7 +21,7 @@
 #include "ui_reportwindow.h"
 
 namespace SDM {
-	ReportWindow::ReportWindow(const QString url, const QString previous, const QString current, QWidget* parent):
+	ReportWindow::ReportWindow(const QString& url, const QString& previous, const QString& current, QWidget* parent):
 		QWidget(parent),
 		ui(nullptr) {
 		setAttribute(Qt::WA_QuitOnClose, false);
@@ -34,7 +34,7 @@ namespace SDM {
 			ui->lineEdit_URL->setReadOnly(true);
 			ui->textEdit_Previous->insertPlainText(previous);
 			ui->textEdit_Current->insertPlainText(current);
-			connect(ui->button_Close, &QPushButton::pressed, this, &ReportWindow::deleteLater);
+			connect(ui->button_Close, &QPushButton::clicked, this, &ReportWindow::deleteLater);
 		}
 		catch (std::exception& e) {
 			qDebug() << e.what() << "Error: Failed to construct SDM::ReportWindow.";

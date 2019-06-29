@@ -76,14 +76,17 @@ namespace SDM {
 		}
 	}
 
-	void Icon::generateReport(const QString url, const QString previous, const QString current) {
-		ReportWindow* report = new ReportWindow(url, previous, current);
-		report->show();
-		showMessage("SDM: Difference Detected", "SDM has detected a change at\n" + url);
+	void Icon::generateReport(std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current) {
+		QString& urlString = *urlStringPtr.get();
+		QPointer<ReportWindow> report = new(std::nothrow) ReportWindow(urlString, previous, current);
+		if (!report.isNull()) {
+			report->show();
+		}
+		showMessage("SDM: Difference Detected", "SDM has detected a change at\n" + urlString);
 	}
 
 	void Icon::openConfig() {
-		if (win == nullptr) {
+		if (win.isNull()) {
 			win = new MainWindow();
 			win->setWindowIcon(QIcon(":/res/icon.png"));
 			win->setAttribute(Qt::WA_DeleteOnClose, true);
@@ -95,9 +98,14 @@ namespace SDM {
 	}
 
 	void Icon::runMonitor() {
-		delete monitor;
-		monitor = new Monitor(this);
-		connect(monitor, &Monitor::difference, this, &Icon::generateReport);
+		try {
+			monitor = new Monitor(this);
+			connect(monitor, &Monitor::difference, this, &Icon::generateReport);
+		}
+		catch (std::exception& e) {
+			qDebug() << "Fatal Error: Failed to create an SDM::Monitor.";
+			std::abort();
+		}
 	}
 
 	void Icon::setActive(const bool beActive) {

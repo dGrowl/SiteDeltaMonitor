@@ -21,6 +21,7 @@
 #define MONITOR_H
 
 #include <fstream>
+#include <memory>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -35,8 +36,8 @@ namespace SDM {
 		Q_OBJECT
 
 	private:
-		QNetworkAccessManager net;
-		QJsonObject history;
+		QNetworkAccessManager          net;
+		QJsonObject                    history;
 		QHash<QString, QNetworkReply*> tests;
 		void loadHistory();
 		void saveHistory();
@@ -45,11 +46,11 @@ namespace SDM {
 	public:
 		Monitor(QObject* parent = nullptr);
 		virtual ~Monitor();
-		void fetch(const QString urlString);
-		void compare(const QString urlString);
+		void fetch(std::shared_ptr<QString> urlStringPtr);
+		void compare(std::shared_ptr<QString> urlStringPtr);
 
 	signals:
-		void difference(const QString url, const QString previous, const QString current);
+		void difference(std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current);
 	};
 }
 

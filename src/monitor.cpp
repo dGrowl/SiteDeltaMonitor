@@ -61,7 +61,8 @@ namespace SDM {
 					for (int i = 0; i < targets.size(); ++i) {
 						QJsonObject target = targets[i].toObject();
 						if (target.value("active") == true) {
-							fetch(target.value("url").toString());
+							std::shared_ptr<QString> urlString = std::make_shared<QString>(target.value("url").toString());
+							fetch(urlString);
 						}
 					}
 					break;
@@ -71,7 +72,8 @@ namespace SDM {
 		}
 	}
 
-	void Monitor::fetch(const QString urlString) {
+	void Monitor::fetch(std::shared_ptr<QString> urlStringPtr) {
+		QString& urlString = *urlStringPtr.get();
 		QUrl url(urlString);
 		qDebug() << "Fetching URL:" << urlString;
 		if (!url.isValid() || url.isLocalFile() || url.isRelative()) {
@@ -85,11 +87,12 @@ namespace SDM {
 		}
 		tests.insert(urlString, reply);
 		connect(reply, &QNetworkReply::finished, this, [=]() {
-			compare(urlString);
+			compare(urlStringPtr);
 		});
 	}
 
-	void Monitor::compare(const QString urlString) {
+	void Monitor::compare(std::shared_ptr<QString> urlStringPtr) {
+		QString& urlString = *urlStringPtr.get();
 		qDebug() << "Attempting to compare data for" << urlString << "with previous data.";
 		QNetworkReply* reply = tests.value(urlString);
 		int replyStatus = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -101,7 +104,7 @@ namespace SDM {
 			if (history.contains(urlString)) {
 				QString prevData = history.value(urlString).toString();
 				if (prevData != liveData) {
-					emit difference(urlString, prevData, liveData);
+					emit difference(urlStringPtr, prevData, liveData);
 				}
 				history.remove(urlString);
 			}

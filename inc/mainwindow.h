@@ -40,9 +40,9 @@ class MainWindow: public QMainWindow {
 
 private:
 	std::unique_ptr<Ui::MainWindow> ui;
-	QMessageBox* aboutBox;
-	QJsonObject  profiles;
-	QString      currentProfileName;
+	QMessageBox*                    aboutBox;
+	QJsonObject                     profiles;
+	QString                         currentProfileName;
 
 	void closeEvent(QCloseEvent* event) override;
 	void loadProfiles();

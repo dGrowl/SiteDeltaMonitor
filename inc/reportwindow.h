@@ -33,7 +33,7 @@ namespace SDM {
 		Q_OBJECT
 
 	public:
-		explicit ReportWindow(const QString url, const QString previous, const QString current, QWidget* parent = nullptr);
+		explicit ReportWindow(const QString& url, const QString& previous, const QString& current, QWidget* parent = nullptr);
 		virtual ~ReportWindow();
 
 	private:

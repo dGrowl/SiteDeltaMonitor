@@ -25,6 +25,7 @@
 #include <QIcon>
 #include <QMenu>
 #include <QNetworkAccessManager>
+#include <QPointer>
 #include <QSystemTrayIcon>
 #include <QTimer>
 #include "inc/mainwindow.h"
@@ -41,10 +42,10 @@ namespace SDM {
 
 	private:
 		std::unique_ptr<QMenu> menu;
-		MainWindow* win;
-		Monitor*    monitor;
-		QTimer      timer;
-		void        createMenu();
+		QPointer<MainWindow>   win;
+		QPointer<Monitor>      monitor;
+		QTimer                 timer;
+		void createMenu();
 
 	public:
 		Icon(QObject* parent = nullptr);
@@ -52,7 +53,7 @@ namespace SDM {
 
 	public slots:
 		void handleClick(const QSystemTrayIcon::ActivationReason reason);
-		void generateReport(const QString url, const QString previous, const QString current);
+		void generateReport(std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current);
 		void openConfig();
 		void runMonitor();
 		void setActive(const bool beActive);
