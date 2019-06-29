@@ -22,15 +22,15 @@
 namespace SDM {
 	Icon::Icon(QObject* parent):
 		QSystemTrayIcon(parent),
-		win(nullptr),
 		menu(nullptr),
+		win(nullptr),
 		monitor(nullptr),
 		timer(this) {
 		setIcon(QIcon(":/res/icon.png"));
 		createMenu();
 		connect(this, &QSystemTrayIcon::activated, this, &Icon::handleClick);
 		timer.callOnTimeout(this, &Icon::runMonitor);
-		int interval = 30 * 60 * 1000; // 30 minute check interval (in milliseconds) by default
+		int interval = minsToMillis(30);
 		QFile profilesFile("profiles.json");
 		if (profilesFile.exists()) {
 			profilesFile.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -38,7 +38,7 @@ namespace SDM {
 			for (auto it = profiles.begin(); it != profiles.end(); ++it) {
 				QJsonObject profile = it.value().toObject();
 				if (profile.value("current").toBool() == true) {
-					interval = profile.value("interval").toInt() * 60 * 1000;
+					interval = minsToMillis(profile.value("interval").toInt());
 					break;
 				}
 			}
@@ -54,12 +54,12 @@ namespace SDM {
 		try {
 			menu = std::make_unique<QMenu>();
 			setContextMenu(menu.get());
-			QAction* activeAction = menu->addAction("&Active");
-			activeAction->setCheckable(true);
-			activeAction->setChecked(true);
+			QAction* activeAction  = menu->addAction("&Active");
 			QAction* optionsAction = menu->addAction("&Options");
 			menu->addSeparator();
 			QAction* exitAction = menu->addAction("&Exit");
+			activeAction->setCheckable(true);
+			activeAction->setChecked(true);
 			connect(activeAction,  &QAction::toggled,   this,                     &Icon::setActive);
 			connect(optionsAction, &QAction::triggered, this,                     &Icon::openConfig);
 			connect(exitAction,    &QAction::triggered, QApplication::instance(), &QApplication::quit);
@@ -79,31 +79,28 @@ namespace SDM {
 	void Icon::generateReport(const QString url, const QString previous, const QString current) {
 		ReportWindow* report = new ReportWindow(url, previous, current);
 		report->show();
+		showMessage("SDM: Difference Detected", "SDM has detected a change at\n" + url);
 	}
 
 	void Icon::openConfig() {
 		if (win == nullptr) {
-			win = std::make_unique<MainWindow>();
+			win = new MainWindow();
 			win->setWindowIcon(QIcon(":/res/icon.png"));
-			win->setAttribute(Qt::WA_QuitOnClose, false);
-			connect(win.get(), &MainWindow::exit, this, &Icon::exitConfig);
+			win->setAttribute(Qt::WA_DeleteOnClose, true);
+			win->setAttribute(Qt::WA_QuitOnClose,   false);
 		}
 		win->show();
 		win->activateWindow();
 		win->raise();
 	}
 
-	void Icon::exitConfig() {
-		win->hide();
-		win.reset(nullptr);
-	}
-
 	void Icon::runMonitor() {
+		delete monitor;
 		monitor = new Monitor(this);
 		connect(monitor, &Monitor::difference, this, &Icon::generateReport);
 	}
 
-	void Icon::setActive(bool beActive) {
+	void Icon::setActive(const bool beActive) {
 		if (beActive) {
 			timer.start();
 		}
@@ -113,9 +110,13 @@ namespace SDM {
 	}
 
 	void Icon::setInterval(const int ms) {
-		timer.stop();
-		timer.setInterval(ms);
-		// TODO: Start or don't based on the menu's &Active action
-		timer.start();
+		if (timer.isActive()) {
+			timer.stop();
+			timer.setInterval(ms);
+			timer.start();
+		}
+		else {
+			timer.setInterval(ms);
+		}
 	}
 }

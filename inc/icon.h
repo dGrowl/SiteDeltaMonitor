@@ -32,15 +32,19 @@
 #include "inc/reportwindow.h"
 
 namespace SDM {
+	inline int minsToMillis(const int mins) {
+		return (mins * 60 * 1000);
+	}
+
 	class Icon: public QSystemTrayIcon {
 		Q_OBJECT
 
 	private:
-		std::unique_ptr<MainWindow> win;
-		std::unique_ptr<QMenu>      menu;
-		Monitor* monitor;
-		QTimer   timer;
-		void createMenu();
+		std::unique_ptr<QMenu> menu;
+		MainWindow* win;
+		Monitor*    monitor;
+		QTimer      timer;
+		void        createMenu();
 
 	public:
 		Icon(QObject* parent = nullptr);
@@ -50,9 +54,8 @@ namespace SDM {
 		void handleClick(const QSystemTrayIcon::ActivationReason reason);
 		void generateReport(const QString url, const QString previous, const QString current);
 		void openConfig();
-		void exitConfig();
 		void runMonitor();
-		void setActive(bool beActive);
+		void setActive(const bool beActive);
 		void setInterval(const int ms);
 	};
 }

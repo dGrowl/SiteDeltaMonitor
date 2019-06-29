@@ -44,7 +44,6 @@ MainWindow::~MainWindow() {}
 
 void MainWindow::closeEvent(QCloseEvent* event) {
 //	TODO: Handle unsaved profile changes
-	emit exit();
 	event->accept();
 }
 
@@ -53,7 +52,7 @@ void MainWindow::addRow(const bool active, const QString url, const QString elem
 	QCheckBox* rowActiveToggle = new QCheckBox(this);
 	rowActiveToggle->setChecked(active);
 	ui->layout_Config_G->addWidget(rowActiveToggle, gridRowCount, 0, 1, 1, Qt::AlignRight);
-	ui->layout_Config_G->addWidget(new QLineEdit(url, this), gridRowCount, 1);
+	ui->layout_Config_G->addWidget(new QLineEdit(url,     this), gridRowCount, 1);
 	ui->layout_Config_G->addWidget(new QLineEdit(element, this), gridRowCount, 2);
 }
 

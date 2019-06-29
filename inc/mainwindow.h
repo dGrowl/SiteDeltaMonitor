@@ -51,13 +51,10 @@ private:
 
 public:
 	explicit MainWindow(QWidget* parent = nullptr);
-	~MainWindow();
+	virtual ~MainWindow();
 
 public slots:
 	void saveProfiles();
-
-signals:
-	void exit();
 };
 
 #endif // MAINWINDOW_H
