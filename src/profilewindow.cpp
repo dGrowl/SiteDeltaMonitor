@@ -17,29 +17,29 @@
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "inc/mainwindow.h"
-#include "ui_mainwindow.h"
+#include "inc/profilewindow.h"
+#include "ui_profilewindow.h"
 
-MainWindow::MainWindow(QWidget *parent):
+ProfileWindow::ProfileWindow(QWidget *parent):
 	QMainWindow(parent),
-	ui(std::make_unique<Ui::MainWindow>()),
+	ui(std::make_unique<Ui::ProfileWindow>()),
 	aboutBox(new QMessageBox(this)),
 	profiles(),
 	currentProfileName(),
 	unsavedChanges(false) {
 	ui->setupUi(this);
 	loadProfiles();
-	connect(ui->button_Save,   &QPushButton::clicked, this, &MainWindow::saveProfiles);
-	connect(ui->button_AddRow, &QPushButton::clicked, this, &MainWindow::addRowEmpty);
 	aboutBox->setWindowTitle("SDM: About");
 	aboutBox->setText("This project was created by github.com/dGrowl.");
 	aboutBox->setInformativeText("Created using Qt.\nQt is Copyright © 2019 The Qt Company.");
-	connect(ui->action_About, &QAction::triggered, aboutBox, &QMessageBox::exec);
+	connect(ui->action_About,  &QAction::triggered,   aboutBox, &QMessageBox::exec);
+	connect(ui->button_AddRow, &QPushButton::clicked, this,     &ProfileWindow::addRowEmpty);
+	connect(ui->button_Save,   &QPushButton::clicked, this,     &ProfileWindow::saveProfiles);
 }
 
-MainWindow::~MainWindow() {}
+ProfileWindow::~ProfileWindow() {}
 
-void MainWindow::closeEvent(QCloseEvent* event) {
+void ProfileWindow::closeEvent(QCloseEvent* event) {
 	if (unsavedChanges) {
 		QMessageBox unsavedPrompt(
 			QMessageBox::Question,
@@ -71,28 +71,28 @@ void MainWindow::closeEvent(QCloseEvent* event) {
 	}
 }
 
-void MainWindow::addRow(const bool active, const QString url, const QString element) {
+void ProfileWindow::addRow(const bool active, const QString url, const QString element) {
 	madeChange();
 	int gridRowCount = ui->layout_Config_G->rowCount();
 	QCheckBox* rowActive  = new QCheckBox(this);
 	QLineEdit* rowUrl     = new QLineEdit(url,     this);
 	QLineEdit* rowElement = new QLineEdit(element, this);
 	rowActive->setChecked(active);
-	connect(rowActive,  &QCheckBox::toggled,     this, &MainWindow::madeChange);
-	connect(rowUrl,     &QLineEdit::textChanged, this, &MainWindow::madeChange);
-	connect(rowElement, &QLineEdit::textChanged, this, &MainWindow::madeChange);
+	connect(rowActive,  &QCheckBox::toggled,     this, &ProfileWindow::madeChange);
+	connect(rowUrl,     &QLineEdit::textChanged, this, &ProfileWindow::madeChange);
+	connect(rowElement, &QLineEdit::textChanged, this, &ProfileWindow::madeChange);
 	ui->layout_Config_G->addWidget(rowActive,  gridRowCount, 0, 1, 1, Qt::AlignRight);
 	ui->layout_Config_G->addWidget(rowUrl,     gridRowCount, 1);
 	ui->layout_Config_G->addWidget(rowElement, gridRowCount, 2);
 }
 
-//void MainWindow::removeRow(const unsigned i) {
+//void ProfileWindow::removeRow(const unsigned i) {
 	// TODO: Implement
 	// Remove ith row of internal 2D QLayoutItem pointer array
 	// Call method that deletes and replaces existing layout
 //}
 
-void MainWindow::loadProfiles() {
+void ProfileWindow::loadProfiles() {
 	QFile profilesFile("profiles.json");
 	if (profilesFile.exists()) {
 		// TODO: Validate profiles json
@@ -141,11 +141,11 @@ void MainWindow::loadProfiles() {
 	unsavedChanges = false;
 }
 
-void MainWindow::madeChange() {
+void ProfileWindow::madeChange() {
 	unsavedChanges = true;
 }
 
-void MainWindow::saveProfiles() {
+void ProfileWindow::saveProfiles() {
 	int gridRowCount = ui->layout_Config_G->rowCount();
 	QJsonObject profile;
 	profile.insert("current", true);
@@ -176,6 +176,6 @@ void MainWindow::saveProfiles() {
 	unsavedChanges = false;
 }
 
-void MainWindow::addRowEmpty() {
+void ProfileWindow::addRowEmpty() {
 	addRow(false, "", "");
 }

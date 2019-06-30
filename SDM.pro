@@ -30,18 +30,18 @@ QMAKE_LFLAGS_RELEASE   += -s
 SOURCES += \
         src/main.cpp \
         src/icon.cpp \
-        src/mainwindow.cpp \
         src/monitor.cpp \
+        src/profilewindow.cpp \
         src/reportwindow.cpp
 
 HEADERS += \
     inc/icon.h \
-    inc/mainwindow.h \
     inc/monitor.h \
+    inc/profilewindow.h \
     inc/reportwindow.h
 
 FORMS += \
-    src/mainwindow.ui \
+    src/profilewindow.ui \
     src/reportwindow.ui
 
 RESOURCES += \

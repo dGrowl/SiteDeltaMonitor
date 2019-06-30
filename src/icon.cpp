@@ -87,7 +87,7 @@ namespace SDM {
 
 	void Icon::openConfig() {
 		if (win.isNull()) {
-			win = new MainWindow();
+			win = new ProfileWindow();
 			win->setWindowIcon(QIcon(":/res/icon.png"));
 			win->setAttribute(Qt::WA_DeleteOnClose, true);
 			win->setAttribute(Qt::WA_QuitOnClose,   false);

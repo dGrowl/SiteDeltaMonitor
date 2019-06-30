@@ -17,8 +17,8 @@
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef PROFILEWINDOW_H
+#define PROFILEWINDOW_H
 
 #include <memory>
 #include <QCheckBox>
@@ -32,14 +32,14 @@
 #include <QJsonObject>
 
 namespace Ui {
-	class MainWindow;
+	class ProfileWindow;
 }
 
-class MainWindow: public QMainWindow {
+class ProfileWindow: public QMainWindow {
 	Q_OBJECT
 
 private:
-	std::unique_ptr<Ui::MainWindow> ui;
+	std::unique_ptr<Ui::ProfileWindow> ui;
 	QMessageBox*                    aboutBox;
 	QJsonObject                     profiles;
 	QString                         currentProfileName;
@@ -51,8 +51,8 @@ private:
 	//	void removeRow(const unsigned i);
 
 public:
-	explicit MainWindow(QWidget* parent = nullptr);
-	virtual ~MainWindow();
+	explicit ProfileWindow(QWidget* parent = nullptr);
+	virtual ~ProfileWindow();
 
 public slots:
 	void madeChange();
@@ -60,4 +60,4 @@ public slots:
 	void addRowEmpty();
 };
 
-#endif // MAINWINDOW_H
+#endif // PROFILEWINDOW_H

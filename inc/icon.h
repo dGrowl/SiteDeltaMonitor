@@ -28,7 +28,7 @@
 #include <QPointer>
 #include <QSystemTrayIcon>
 #include <QTimer>
-#include "inc/mainwindow.h"
+#include "inc/profilewindow.h"
 #include "inc/monitor.h"
 #include "inc/reportwindow.h"
 
@@ -42,7 +42,7 @@ namespace SDM {
 
 	private:
 		std::unique_ptr<QMenu> menu;
-		QPointer<MainWindow>   win;
+		QPointer<ProfileWindow>   win;
 		QPointer<Monitor>      monitor;
 		QTimer                 timer;
 		void createMenu();
