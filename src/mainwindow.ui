@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SiteDeltaMonitor</string>
+   <string>SDM: Profiles</string>
   </property>
   <widget class="QWidget" name="container">
    <layout class="QVBoxLayout" name="layout_Core_V">

@@ -43,10 +43,11 @@ private:
 	QMessageBox*                    aboutBox;
 	QJsonObject                     profiles;
 	QString                         currentProfileName;
+	bool                            unsavedChanges;
 
 	void closeEvent(QCloseEvent* event) override;
 	void loadProfiles();
-	void addRow(const bool active = false, const QString url = "", const QString element = "");
+	void addRow(const bool active, const QString url, const QString element);
 	//	void removeRow(const unsigned i);
 
 public:
@@ -54,7 +55,9 @@ public:
 	virtual ~MainWindow();
 
 public slots:
+	void madeChange();
 	void saveProfiles();
+	void addRowEmpty();
 };
 
 #endif // MAINWINDOW_H

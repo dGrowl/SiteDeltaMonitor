@@ -39,6 +39,7 @@ namespace SDM {
 		QNetworkAccessManager          net;
 		QJsonObject                    history;
 		QHash<QString, QNetworkReply*> tests;
+
 		void loadHistory();
 		void saveHistory();
 		void loadProfile();

@@ -76,7 +76,7 @@ namespace SDM {
 		}
 	}
 
-	void Icon::generateReport(std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current) {
+	void Icon::generateReport(const std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current) {
 		QString& urlString = *urlStringPtr.get();
 		QPointer<ReportWindow> report = new(std::nothrow) ReportWindow(urlString, previous, current);
 		if (!report.isNull()) {

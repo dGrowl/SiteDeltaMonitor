@@ -34,7 +34,7 @@ namespace SDM {
 			ui->lineEdit_URL->setReadOnly(true);
 			ui->textEdit_Previous->insertPlainText(previous);
 			ui->textEdit_Current->insertPlainText(current);
-			connect(ui->button_Close, &QPushButton::clicked, this, &ReportWindow::deleteLater);
+			connect(ui->button_Close, &QPushButton::clicked, this, &ReportWindow::close);
 		}
 		catch (std::exception& e) {
 			qDebug() << e.what() << "Error: Failed to construct SDM::ReportWindow.";

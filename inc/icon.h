@@ -53,7 +53,7 @@ namespace SDM {
 
 	public slots:
 		void handleClick(const QSystemTrayIcon::ActivationReason reason);
-		void generateReport(std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current);
+		void generateReport(const std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current);
 		void openConfig();
 		void runMonitor();
 		void setActive(const bool beActive);

@@ -25,35 +25,65 @@ MainWindow::MainWindow(QWidget *parent):
 	ui(std::make_unique<Ui::MainWindow>()),
 	aboutBox(new QMessageBox(this)),
 	profiles(),
-	currentProfileName() {
+	currentProfileName(),
+	unsavedChanges(false) {
 	ui->setupUi(this);
 	loadProfiles();
-
+	connect(ui->button_Save,   &QPushButton::clicked, this, &MainWindow::saveProfiles);
+	connect(ui->button_AddRow, &QPushButton::clicked, this, &MainWindow::addRowEmpty);
 	aboutBox->setWindowTitle("SDM: About");
 	aboutBox->setText("This project was created by github.com/dGrowl.");
 	aboutBox->setInformativeText("Created using Qt.\nQt is Copyright © 2019 The Qt Company.");
-
-	connect(ui->action_About,  &QAction::triggered,   aboutBox, &QMessageBox::exec);
-	connect(ui->button_Save,   &QPushButton::clicked, this,     &MainWindow::saveProfiles);
-	connect(ui->button_AddRow, &QPushButton::clicked, this,     [=]() {
-		addRow();
-	});
+	connect(ui->action_About, &QAction::triggered, aboutBox, &QMessageBox::exec);
 }
 
 MainWindow::~MainWindow() {}
 
 void MainWindow::closeEvent(QCloseEvent* event) {
-//	TODO: Handle unsaved profile changes
-	event->accept();
+	if (unsavedChanges) {
+		QMessageBox unsavedPrompt(
+			QMessageBox::Question,
+			"SDM: Unsaved Changes",
+			"There are unsaved changes to the profiles.\n\nWhat would you like to do with them?",
+			QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+			this,
+			Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint
+		);
+		unsavedPrompt.setDefaultButton(QMessageBox::Save);
+		int response = unsavedPrompt.exec();
+		switch (response) {
+			case QMessageBox::Save:
+				saveProfiles();
+				event->accept();
+				break;
+			case QMessageBox::Discard:
+				event->accept();
+				break;
+			case QMessageBox::Cancel:
+				event->ignore();
+				break;
+			default:
+				break;
+		}
+	}
+	else {
+		event->accept();
+	}
 }
 
 void MainWindow::addRow(const bool active, const QString url, const QString element) {
+	madeChange();
 	int gridRowCount = ui->layout_Config_G->rowCount();
-	QCheckBox* rowActiveToggle = new QCheckBox(this);
-	rowActiveToggle->setChecked(active);
-	ui->layout_Config_G->addWidget(rowActiveToggle, gridRowCount, 0, 1, 1, Qt::AlignRight);
-	ui->layout_Config_G->addWidget(new QLineEdit(url,     this), gridRowCount, 1);
-	ui->layout_Config_G->addWidget(new QLineEdit(element, this), gridRowCount, 2);
+	QCheckBox* rowActive  = new QCheckBox(this);
+	QLineEdit* rowUrl     = new QLineEdit(url,     this);
+	QLineEdit* rowElement = new QLineEdit(element, this);
+	rowActive->setChecked(active);
+	connect(rowActive,  &QCheckBox::toggled,     this, &MainWindow::madeChange);
+	connect(rowUrl,     &QLineEdit::textChanged, this, &MainWindow::madeChange);
+	connect(rowElement, &QLineEdit::textChanged, this, &MainWindow::madeChange);
+	ui->layout_Config_G->addWidget(rowActive,  gridRowCount, 0, 1, 1, Qt::AlignRight);
+	ui->layout_Config_G->addWidget(rowUrl,     gridRowCount, 1);
+	ui->layout_Config_G->addWidget(rowElement, gridRowCount, 2);
 }
 
 //void MainWindow::removeRow(const unsigned i) {
@@ -108,6 +138,11 @@ void MainWindow::loadProfiles() {
 		}
 	}
 	ui->menu_Profiles->insertSeparator(ui->action_New);
+	unsavedChanges = false;
+}
+
+void MainWindow::madeChange() {
+	unsavedChanges = true;
 }
 
 void MainWindow::saveProfiles() {
@@ -138,4 +173,9 @@ void MainWindow::saveProfiles() {
 	profilesFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
 	profilesFile.write(profilesDoc.toJson());
 	profilesFile.close();
+	unsavedChanges = false;
+}
+
+void MainWindow::addRowEmpty() {
+	addRow(false, "", "");
 }
