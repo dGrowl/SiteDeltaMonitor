@@ -53,8 +53,15 @@
    </item>
    <item>
     <layout class="QGridLayout" name="layout_Compare_G">
-     <item row="1" column="0">
-      <widget class="QPlainTextEdit" name="textEdit_Previous"/>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_Previous">
+       <property name="text">
+        <string>Previous</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
      </item>
      <item row="0" column="1">
       <widget class="QLabel" name="label_Current">
@@ -69,15 +76,8 @@
      <item row="1" column="1">
       <widget class="QPlainTextEdit" name="textEdit_Current"/>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_Previous">
-       <property name="text">
-        <string>Previous</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
+     <item row="1" column="0">
+      <widget class="QPlainTextEdit" name="textEdit_Previous"/>
      </item>
     </layout>
    </item>

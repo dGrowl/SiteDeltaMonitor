@@ -26,6 +26,7 @@
 #include <QMenu>
 #include <QNetworkAccessManager>
 #include <QPointer>
+#include <QRegularExpression>
 #include <QSystemTrayIcon>
 #include <QTimer>
 #include "inc/profilewindow.h"
@@ -41,10 +42,10 @@ namespace SDM {
 		Q_OBJECT
 
 	private:
-		std::unique_ptr<QMenu> menu;
-		QPointer<ProfileWindow>   win;
-		QPointer<Monitor>      monitor;
-		QTimer                 timer;
+		std::unique_ptr<QMenu>  menu;
+		QPointer<ProfileWindow> win;
+		QPointer<Monitor>       monitor;
+		QTimer                  timer;
 		void createMenu();
 
 	public:

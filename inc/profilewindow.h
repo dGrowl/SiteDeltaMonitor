@@ -40,10 +40,10 @@ class ProfileWindow: public QMainWindow {
 
 private:
 	std::unique_ptr<Ui::ProfileWindow> ui;
-	QMessageBox*                    aboutBox;
-	QJsonObject                     profiles;
-	QString                         currentProfileName;
-	bool                            unsavedChanges;
+	QMessageBox*                       aboutBox;
+	QJsonObject                        profiles;
+	QString                            currentProfileName;
+	bool                               unsavedChanges;
 
 	void closeEvent(QCloseEvent* event) override;
 	void loadProfiles();
