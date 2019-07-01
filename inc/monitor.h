@@ -22,6 +22,7 @@
 
 #include <fstream>
 #include <memory>
+#include <QDir>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -37,11 +38,8 @@ namespace SDM {
 
 	private:
 		QNetworkAccessManager          net;
-		QJsonObject                    history;
 		QHash<QString, QNetworkReply*> tests;
 
-		void loadHistory();
-		void saveHistory();
 		void loadProfile();
 
 	public:

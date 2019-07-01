@@ -22,32 +22,11 @@
 namespace SDM {
 	Monitor::Monitor(QObject* parent):
 		QObject(parent),
-		history(),
 		tests() {
-		loadHistory();
 		loadProfile();
 	}
 
-	Monitor::~Monitor() {
-		saveHistory();
-	}
-
-	void Monitor::loadHistory() {
-		QFile historyFile("history.json");
-		if (historyFile.exists()) {
-			historyFile.open(QIODevice::ReadOnly | QIODevice::Text);
-			history = QJsonDocument::fromJson(historyFile.readAll()).object();
-			historyFile.close();
-		}
-	}
-
-	void Monitor::saveHistory() {
-		QJsonDocument historyDoc(history);
-		QFile historyFile("history.json");
-		historyFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate);
-		historyFile.write(historyDoc.toJson());
-		historyFile.close();
-	}
+	Monitor::~Monitor() {}
 
 	void Monitor::loadProfile() {
 		QFile profilesFile("profiles.json");
@@ -101,14 +80,31 @@ namespace SDM {
 		}
 		else {
 			QString liveData = reply->readAll();
-			if (history.contains(urlString)) {
-				QString prevData = history.value(urlString).toString();
-				if (prevData != liveData) {
-					emit difference(urlStringPtr, prevData, liveData);
+			QCryptographicHash urlHash(QCryptographicHash::Md5);
+			urlHash.addData(urlString.toUtf8());
+			QString urlHash64 = urlHash.result().toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals);
+			QDir().mkdir("history");
+			QString historyFileString = QDir::toNativeSeparators("history/" + urlHash64);
+			QFile historyFile(historyFileString);
+			if (historyFile.exists()) {
+				if (historyFile.open(QIODevice::ReadOnly)) {
+					QString prevData = historyFile.readAll();
+					historyFile.close();
+					if (prevData != liveData) {
+						emit difference(urlStringPtr, prevData, liveData);
+					}
 				}
-				history.remove(urlString);
+				else {
+					qDebug() << "Error: History file exists but could not be read from." << historyFile.errorString();
+				}
 			}
-			history.insert(urlString, liveData);
+			if (historyFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+				historyFile.write(liveData.toUtf8());
+				historyFile.close();
+			}
+			else {
+				qDebug() << "Error: Failed to write to history file." << historyFile.errorString();
+			}
 		}
 		reply->close();
 		tests.remove(urlString);
