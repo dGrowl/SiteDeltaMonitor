@@ -20,18 +20,12 @@
 #ifndef ICON_H
 #define ICON_H
 
-#include <memory>
 #include <QApplication>
-#include <QIcon>
 #include <QMenu>
-#include <QNetworkAccessManager>
-#include <QPointer>
-#include <QRegularExpression>
 #include <QSystemTrayIcon>
 #include <QTimer>
 #include "inc/profilewindow.h"
-#include "inc/monitor.h"
-#include "inc/reportwindow.h"
+#include "inc/check.h"
 
 namespace SDM {
 	inline int minsToMillis(const int mins) {
@@ -44,19 +38,18 @@ namespace SDM {
 	private:
 		std::unique_ptr<QMenu>  menu;
 		QPointer<ProfileWindow> win;
-		QPointer<Monitor>       monitor;
 		QTimer                  timer;
 		void createMenu();
 
 	public:
 		Icon(QObject* parent = nullptr);
-		virtual ~Icon();
+		virtual ~Icon() = default;
 
 	public slots:
 		void handleClick(const QSystemTrayIcon::ActivationReason reason);
-		void generateReport(const std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current);
+		void showNotification(const QString& urlString);
 		void openConfig();
-		void runMonitor();
+		void runTests();
 		void setActive(const bool beActive);
 		void setInterval(const int ms);
 	};

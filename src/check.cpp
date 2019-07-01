@@ -17,63 +17,47 @@
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "inc/monitor.h"
+#include "inc/check.h"
 
 namespace SDM {
-	Monitor::Monitor(QObject* parent):
+	Check::Check(const QString& urlStringP, const QString& elementStringP, QObject* parent):
 		QObject(parent),
-		tests() {
-		loadProfile();
+		net(),
+		reply(nullptr),
+		urlString(urlStringP),
+		elementString(elementStringP) {}
+
+	Check::~Check() {
+		reply->close();
 	}
 
-	Monitor::~Monitor() {}
-
-	void Monitor::loadProfile() {
-		QFile profilesFile("profiles.json");
-		if (profilesFile.exists()) {
-			profilesFile.open(QIODevice::ReadOnly | QIODevice::Text);
-			QJsonObject profiles = QJsonDocument::fromJson(profilesFile.readAll()).object();
-			for (auto it = profiles.begin(); it != profiles.end(); ++it) {
-				QJsonObject profile = it.value().toObject();
-				if (profile.value("current").toBool() == true) {
-					QJsonArray targets = profile.value("targets").toArray();
-					for (int i = 0; i < targets.size(); ++i) {
-						QJsonObject target = targets[i].toObject();
-						if (target.value("active") == true) {
-							std::shared_ptr<QString> urlString = std::make_shared<QString>(target.value("url").toString());
-							fetch(urlString);
-						}
-					}
-					break;
-				}
-			}
-			profilesFile.close();
-		}
-	}
-
-	void Monitor::fetch(std::shared_ptr<QString> urlStringPtr) {
-		QString& urlString = *urlStringPtr.get();
-		QUrl url(urlString);
+	void Check::run() {
 		qDebug() << "Fetching URL:" << urlString;
+		QUrl url(urlString);
 		if (!url.isValid() || url.isLocalFile() || url.isRelative()) {
 			qDebug() << "Error: Invalid URL" << urlString;
+			deleteLater();
 			return;
 		}
-		QNetworkReply* reply = net.get(QNetworkRequest(url));
+		reply = net.get(QNetworkRequest(url));
 		if (reply->error() != QNetworkReply::NoError) {
 			qDebug() << "Error: Invalid HTTP reply" << reply->errorString();
+			deleteLater();
 			return;
 		}
-		tests.insert(urlString, reply);
-		connect(reply, &QNetworkReply::finished, this, [=]() {
-			compare(urlStringPtr);
-		});
+		connect(reply, &QNetworkReply::finished, this, &Check::compare);
 	}
 
-	void Monitor::compare(std::shared_ptr<QString> urlStringPtr) {
-		QString& urlString = *urlStringPtr.get();
+	void Check::report(const QString& previous, const QString& current) {
+		QPointer<ReportWindow> report = new(std::nothrow) ReportWindow(urlString, previous, current);
+		if (!report.isNull()) {
+			report->show();
+		}
+		emit difference(urlString);
+	}
+
+	void Check::compare() {
 		qDebug() << "Attempting to compare data for" << urlString << "with previous data.";
-		QNetworkReply* reply = tests.value(urlString);
 		int replyStatus = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
 		if (replyStatus != 200) {
 			qDebug() << "Error: Invalid HTTP reply code" << QVariant(replyStatus).toInt();
@@ -91,7 +75,7 @@ namespace SDM {
 					QString prevData = historyFile.readAll();
 					historyFile.close();
 					if (prevData != liveData) {
-						emit difference(urlStringPtr, prevData, liveData);
+						report(prevData, liveData);
 					}
 				}
 				else {
@@ -106,10 +90,6 @@ namespace SDM {
 				qDebug() << "Error: Failed to write to history file." << historyFile.errorString();
 			}
 		}
-		reply->close();
-		tests.remove(urlString);
-		if (tests.isEmpty()) {
-			deleteLater();
-		}
+		deleteLater();
 	}
 }

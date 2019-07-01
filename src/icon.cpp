@@ -24,12 +24,11 @@ namespace SDM {
 		QSystemTrayIcon(parent),
 		menu(nullptr),
 		win(nullptr),
-		monitor(nullptr),
 		timer(this) {
 		setIcon(QIcon(":/res/icon.png"));
 		createMenu();
 		connect(this, &QSystemTrayIcon::activated, this, &Icon::handleClick);
-		timer.callOnTimeout(this, &Icon::runMonitor);
+		timer.callOnTimeout(this, &Icon::runTests);
 		int interval = minsToMillis(30);
 		QFile profilesFile("profiles.json");
 		if (profilesFile.exists()) {
@@ -47,8 +46,6 @@ namespace SDM {
 		setInterval(interval);
 		setActive(true);
 	}
-
-	Icon::~Icon() {}
 
 	void Icon::createMenu() {
 		try {
@@ -76,12 +73,7 @@ namespace SDM {
 		}
 	}
 
-	void Icon::generateReport(const std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current) {
-		QString& urlString = *urlStringPtr.get();
-		QPointer<ReportWindow> report = new(std::nothrow) ReportWindow(urlString, previous, current);
-		if (!report.isNull()) {
-			report->show();
-		}
+	void Icon::showNotification(const QString& urlString) {
 		showMessage("SDM: Difference Detected", "SDM has detected a change at\n" + urlString);
 	}
 
@@ -97,14 +89,33 @@ namespace SDM {
 		win->raise();
 	}
 
-	void Icon::runMonitor() {
-		try {
-			monitor = new Monitor(this);
-			connect(monitor, &Monitor::difference, this, &Icon::generateReport);
-		}
-		catch (std::exception& e) {
-			qDebug() << "Fatal Error: Failed to create an SDM::Monitor.";
-			std::abort();
+	void Icon::runTests() {
+		QFile profilesFile("profiles.json");
+		if (profilesFile.exists()) {
+			profilesFile.open(QIODevice::ReadOnly | QIODevice::Text);
+			QJsonObject profiles = QJsonDocument::fromJson(profilesFile.readAll()).object();
+			for (auto it = profiles.begin(); it != profiles.end(); ++it) {
+				QJsonObject profile = it.value().toObject();
+				if (profile.value("current").toBool() == true) {
+					QJsonArray targets = profile.value("targets").toArray();
+					for (int i = 0; i < targets.size(); ++i) {
+						QJsonObject target = targets[i].toObject();
+						if (target.value("active") == true) {
+							try {
+								Check* test = new Check(target.value("url").toString(), target.value("element").toString(), this);
+								test->run();
+								connect(test, &Check::difference, this, &Icon::showNotification);
+							}
+							catch (std::exception& e) {
+								qDebug() << "Fatal Error: Failed to create an SDM::Test.";
+								std::abort();
+							}
+						}
+					}
+					break;
+				}
+			}
+			profilesFile.close();
 		}
 	}
 

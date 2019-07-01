@@ -23,7 +23,6 @@
 #include <memory>
 #include <QCheckBox>
 #include <QCloseEvent>
-#include <QFile>
 #include <QLineEdit>
 #include <QMainWindow>
 #include <QMessageBox>

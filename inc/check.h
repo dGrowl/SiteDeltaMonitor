@@ -17,40 +17,36 @@
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MONITOR_H
-#define MONITOR_H
+#ifndef CHECK_H
+#define CHECK_H
 
-#include <fstream>
-#include <memory>
 #include <QDir>
-#include <QFile>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QObject>
-#include <QUrl>
+#include <QPointer>
+#include "inc/reportwindow.h"
 
 namespace SDM {
-	class Monitor: public QObject {
+	class Check: public QObject {
 		Q_OBJECT
 
 	private:
-		QNetworkAccessManager          net;
-		QHash<QString, QNetworkReply*> tests;
-
-		void loadProfile();
+		QNetworkAccessManager net;
+		QNetworkReply*        reply;
+		QString               urlString;
+		QString               elementString;
 
 	public:
-		Monitor(QObject* parent = nullptr);
-		virtual ~Monitor();
-		void fetch(std::shared_ptr<QString> urlStringPtr);
-		void compare(std::shared_ptr<QString> urlStringPtr);
+		Check(const QString& urlP, const QString& elementP, QObject* parent = nullptr);
+		virtual ~Check();
+		void run();
+		void report(const QString& previous, const QString& current);
+
+	public slots:
+		void compare();
 
 	signals:
-		void difference(std::shared_ptr<QString> urlStringPtr, const QString& previous, const QString& current);
+		void difference(const QString& url);
 	};
 }
 
-#endif // MONITOR_H
+#endif // CHECK_H

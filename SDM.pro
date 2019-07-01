@@ -28,15 +28,15 @@ QMAKE_CXXFLAGS_RELEASE += -Os
 QMAKE_LFLAGS_RELEASE   += -s
 
 SOURCES += \
+        src/check.cpp \
         src/main.cpp \
         src/icon.cpp \
-        src/monitor.cpp \
         src/profilewindow.cpp \
         src/reportwindow.cpp
 
 HEADERS += \
+    inc/check.h \
     inc/icon.h \
-    inc/monitor.h \
     inc/profilewindow.h \
     inc/reportwindow.h
 
