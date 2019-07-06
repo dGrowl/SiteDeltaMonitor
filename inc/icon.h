@@ -39,7 +39,7 @@ namespace SDM {
 		std::unique_ptr<QMenu>  menu;
 		QPointer<ProfileWindow> win;
 		QTimer                  timer;
-		void createMenu();
+		void                    createMenu();
 
 	public:
 		Icon(QObject* parent = nullptr);

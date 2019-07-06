@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QNetworkReply>
 #include <QPointer>
+#include <gumbo.h>
 #include "inc/reportwindow.h"
 
 namespace SDM {
@@ -34,15 +35,20 @@ namespace SDM {
 		QNetworkReply*        reply;
 		QString               urlString;
 		QString               elementString;
+		QString               prevData;
+		QString               liveData;
+		void                  collectElements(const std::string& html, QString& data, GumboNode* node);
+		void                  collectElements(const QString& html, QString& data);
 
 	public:
 		Check(const QString& urlP, const QString& elementP, QObject* parent = nullptr);
 		virtual ~Check();
 		void run();
 		void report(const QString& previous, const QString& current);
+		void compare();
 
 	public slots:
-		void compare();
+		void process();
 
 	signals:
 		void difference(const QString& url);

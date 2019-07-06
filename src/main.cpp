@@ -17,7 +17,6 @@
  * License along with SDM. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <QApplication>
 #include "inc/icon.h"
 
 int main(int argc, char* argv[]) {

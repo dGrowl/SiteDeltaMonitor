@@ -37,7 +37,7 @@
        <number>6</number>
       </property>
       <item row="0" column="2">
-       <widget class="QLabel" name="category_URL">
+       <widget class="QLabel" name="label_Element">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -45,12 +45,12 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Element (Blank, #ID, or .class)</string>
+         <string>Element (Blank/Tag Name/#ID/.class)</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLabel" name="category_Target">
+       <widget class="QLabel" name="label_URL">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -63,7 +63,7 @@
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="category_Active">
+       <widget class="QLabel" name="label_Active">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
