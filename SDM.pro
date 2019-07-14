@@ -13,7 +13,7 @@ CONFIG  += c++14
 DEFINES += QT_DEPRECATED_WARNINGS
 LIBS    += -lgumbo
 
-QMAKE_CXXFLAGS         += -pedantic
+QMAKE_CXXFLAGS         += -Wall -Wextra -Weffc++ -pedantic
 QMAKE_CXXFLAGS_RELEASE += -Os
 QMAKE_LFLAGS_RELEASE   += -s
 

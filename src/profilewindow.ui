@@ -6,14 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>140</height>
+    <width>495</width>
+    <height>180</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>SDM: Profiles</string>
   </property>
-  <widget class="QWidget" name="container">
+  <widget class="QWidget" name="central_V">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <layout class="QVBoxLayout" name="layout_Core_V">
     <item>
      <spacer name="spacer_Roof_V">
@@ -23,32 +35,19 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>40</height>
+        <height>0</height>
        </size>
       </property>
      </spacer>
     </item>
     <item>
-     <layout class="QGridLayout" name="layout_Config_G">
+     <layout class="QGridLayout" name="layout_Targets_G">
       <property name="rightMargin">
        <number>0</number>
       </property>
       <property name="verticalSpacing">
        <number>6</number>
       </property>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label_Element">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>Element (Blank/Tag Name/#ID/.class)</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QLabel" name="label_URL">
         <property name="sizePolicy">
@@ -59,6 +58,19 @@
         </property>
         <property name="text">
          <string>URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_Element">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Element (Blank/Tag Name/#ID/.class)</string>
         </property>
        </widget>
       </item>
@@ -75,12 +87,21 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <layout class="QVBoxLayout" name="layout_Active_V"/>
+      </item>
+      <item row="1" column="1">
+       <layout class="QVBoxLayout" name="layout_URL_V"/>
+      </item>
+      <item row="1" column="2">
+       <layout class="QVBoxLayout" name="layout_Element_V"/>
+      </item>
      </layout>
     </item>
     <item>
      <layout class="QHBoxLayout" name="layout_Trailing_H">
       <item>
-       <widget class="QPushButton" name="button_AddRow">
+       <widget class="QPushButton" name="button_AddTarget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -99,7 +120,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="button_RemoveRow">
+       <widget class="QPushButton" name="button_RemoveTarget">
         <property name="text">
          <string>Remove</string>
         </property>
@@ -155,7 +176,7 @@
      </layout>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QHBoxLayout" name="layout_Save_H">
       <item>
        <spacer name="spacer_SaveL_H">
         <property name="orientation">
@@ -199,7 +220,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>40</height>
+        <height>0</height>
        </size>
       </property>
      </spacer>
@@ -211,7 +232,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>480</width>
+     <width>495</width>
      <height>20</height>
     </rect>
    </property>
@@ -219,7 +240,7 @@
     <property name="title">
      <string>&amp;Profiles</string>
     </property>
-    <addaction name="action_New"/>
+    <addaction name="action_NewProfile"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -241,7 +262,7 @@
     <string>&amp;About</string>
    </property>
   </action>
-  <action name="action_New">
+  <action name="action_NewProfile">
    <property name="text">
     <string>&amp;New</string>
    </property>

@@ -32,16 +32,18 @@ namespace SDM {
 
 	private:
 		QNetworkAccessManager net;
-		QNetworkReply*        reply;
-		QString               urlString;
-		QString               elementString;
-		QString               prevData;
-		QString               liveData;
-		void                  collectElements(const std::string& html, QString& data, GumboNode* node);
-		void                  collectElements(const QString& html, QString& data);
+		QNetworkReply* reply;
+		QString urlString;
+		QString elementString;
+		QString prevData;
+		QString liveData;
+		void collectElements(const std::string& html, QString& data, GumboNode* node);
+		void collectElements(const QString& html, QString& data);
 
 	public:
 		Check(const QString& urlP, const QString& elementP, QObject* parent = nullptr);
+		Check(const Check& other)            = delete;
+		Check& operator=(const Check& other) = delete;
 		virtual ~Check();
 		void run();
 		void report(const QString& previous, const QString& current);

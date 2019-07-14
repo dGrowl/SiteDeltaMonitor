@@ -23,6 +23,7 @@
 #include <memory>
 #include <QCheckBox>
 #include <QCloseEvent>
+#include <QDebug>
 #include <QLineEdit>
 #include <QMainWindow>
 #include <QMessageBox>
@@ -34,29 +35,36 @@ namespace Ui {
 	class ProfileWindow;
 }
 
-class ProfileWindow: public QMainWindow {
-	Q_OBJECT
+namespace SDM {
+	class ProfileWindow: public QMainWindow {
+		Q_OBJECT
 
-private:
-	std::unique_ptr<Ui::ProfileWindow> ui;
-	QMessageBox*                       aboutBox;
-	QJsonObject                        profiles;
-	QString                            currentProfileName;
-	bool                               unsavedChanges;
+	private:
+		std::unique_ptr<Ui::ProfileWindow> ui;
+		QMessageBox* aboutBox;
+		QJsonObject profiles;
+		QString currentProfileName;
+		bool unsavedChanges;
+		void closeEvent(QCloseEvent* event) override;
+		void shrinkToFit();
+		void setActiveProfile(QAction* action);
+		void loadProfiles();
+		void addTarget(const bool active, const QString& url, const QString& element);
+		void removeTarget(QAction* target);
+		void clearTargets();
 
-	void closeEvent(QCloseEvent* event) override;
-	void loadProfiles();
-	void addRow(const bool active, const QString url, const QString element);
-	//	void removeRow(const unsigned i);
+	public:
+		explicit ProfileWindow(QWidget* parent = nullptr);
+		ProfileWindow(const ProfileWindow& other)            = delete;
+		ProfileWindow& operator=(const ProfileWindow& other) = delete;
+		virtual ~ProfileWindow();
 
-public:
-	explicit ProfileWindow(QWidget* parent = nullptr);
-	virtual ~ProfileWindow();
-
-public slots:
-	void madeChange();
-	void saveProfiles();
-	void addRowEmpty();
-};
+	public slots:
+		void madeChange();
+		void saveProfiles();
+		void addTargetBlank();
+		void removalMenu();
+	};
+}
 
 #endif // PROFILEWINDOW_H
