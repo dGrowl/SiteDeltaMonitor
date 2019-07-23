@@ -21,6 +21,7 @@
 #define PROFILEWINDOW_H
 
 #include <memory>
+#include <QActionGroup>
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QDebug>
@@ -41,6 +42,8 @@ namespace SDM {
 
 	private:
 		std::unique_ptr<Ui::ProfileWindow> ui;
+		QActionGroup* profileActions;
+		QAction* separator_Profile; // KLUGE: profilewindow.ui hates separators.
 		QMessageBox* aboutBox;
 		QJsonObject profiles;
 		QString currentProfileName;
@@ -61,6 +64,7 @@ namespace SDM {
 
 	public slots:
 		void madeChange();
+		void addProfile();
 		void saveProfiles();
 		void addTargetBlank();
 		void removalMenu();

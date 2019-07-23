@@ -152,7 +152,7 @@
       <item>
        <widget class="QLabel" name="label_Hours">
         <property name="text">
-         <string>hours</string>
+         <string>hrs</string>
         </property>
        </widget>
       </item>
@@ -169,7 +169,7 @@
       <item>
        <widget class="QLabel" name="label_Minutes">
         <property name="text">
-         <string>minutes</string>
+         <string>mins</string>
         </property>
        </widget>
       </item>

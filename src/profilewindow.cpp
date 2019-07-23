@@ -24,19 +24,27 @@ namespace SDM {
 	ProfileWindow::ProfileWindow(QWidget *parent):
 		QMainWindow(parent),
 		ui(std::make_unique<Ui::ProfileWindow>()),
-		aboutBox(new QMessageBox(this)),
+		profileActions(nullptr),
+		separator_Profile(nullptr),
+		aboutBox(nullptr),
 		profiles(),
 		currentProfileName(),
 		unsavedChanges(false) {
 		ui->setupUi(this);
+		separator_Profile = ui->menu_Profiles->insertSeparator(ui->action_NewProfile);
+		profileActions = new QActionGroup(ui->menu_Profiles);
+		profileActions->setExclusive(true);
 		loadProfiles();
+		aboutBox = new QMessageBox(this);
 		aboutBox->setWindowTitle("SDM: About");
 		aboutBox->setText("This project was created by github.com/dGrowl.");
 		aboutBox->setInformativeText("Created using Qt.\nQt is Copyright © 2019 The Qt Company.");
-		connect(ui->action_About,        &QAction::triggered,   aboutBox, &QMessageBox::exec);
-		connect(ui->button_AddTarget,    &QPushButton::clicked, this,     &ProfileWindow::addTargetBlank);
-		connect(ui->button_RemoveTarget, &QPushButton::clicked, this,     &ProfileWindow::removalMenu);
-		connect(ui->button_Save,         &QPushButton::clicked, this,     &ProfileWindow::saveProfiles);
+		connect(profileActions,          &QActionGroup::triggered, this,     &ProfileWindow::setActiveProfile);
+		connect(ui->action_About,        &QAction::triggered,      aboutBox, &QMessageBox::exec);
+		connect(ui->action_NewProfile,   &QAction::triggered,      this,     &ProfileWindow::addProfile);
+		connect(ui->button_AddTarget,    &QPushButton::clicked,    this,     &ProfileWindow::addTargetBlank);
+		connect(ui->button_RemoveTarget, &QPushButton::clicked,    this,     &ProfileWindow::removalMenu);
+		connect(ui->button_Save,         &QPushButton::clicked,    this,     &ProfileWindow::saveProfiles);
 	}
 
 	ProfileWindow::~ProfileWindow() {}
@@ -121,8 +129,12 @@ namespace SDM {
 		for (int i = 0; i < ui->layout_URL_V->count(); ++i) {
 			QString urlString  = qobject_cast<QLineEdit*>(ui->layout_URL_V->itemAt(i)->widget())->text();
 			QString elemString = qobject_cast<QLineEdit*>(ui->layout_Element_V->itemAt(i)->widget())->text();
-			if (urlString.isEmpty())  urlString  = "Blank";
-			if (elemString.isEmpty()) elemString = "Blank";
+			if (urlString.isEmpty()) {
+				urlString  = "Blank";
+			}
+			if (elemString.isEmpty()) {
+				elemString = "Blank";
+			}
 			QAction* target = new QAction(QString("%1::%2").arg(urlString, elemString));
 			target->setIconText(QString::number(i));
 			menu->addAction(target);
@@ -186,20 +198,17 @@ namespace SDM {
 			profilesFile.write(QJsonDocument(profiles).toJson());
 		}
 		profilesFile.close();
-		QActionGroup* profileActions = new QActionGroup(ui->menu_Profiles);
-		profileActions->setExclusive(true);
-		connect(profileActions, &QActionGroup::triggered, this, &ProfileWindow::setActiveProfile);
 		for (auto it = profiles.constBegin(); it != profiles.constEnd(); ++it) {
 			QString     profileName   = it.key();
 			QJsonObject profileData   = it.value().toObject();
 			QAction*    profileAction = new QAction(profileName, ui->menu_Profiles);
 			profileAction->setCheckable(true);
 			profileActions->addAction(profileAction);
-			ui->menu_Profiles->insertAction(ui->action_NewProfile, profileAction);
+			ui->menu_Profiles->insertAction(separator_Profile, profileAction);
 			if (profileData.value("current").toBool()) {
 				profileAction->setChecked(true);
 				int profileInterval = profileData.value("interval").toInt();
-				ui->spinBox_Hours->setValue(profileInterval / 60);
+				ui->spinBox_Hours->setValue(profileInterval   / 60);
 				ui->spinBox_Minutes->setValue(profileInterval % 60);
 				currentProfileName = profileName;
 				QJsonArray targets = profileData.value("targets").toArray();
@@ -213,12 +222,32 @@ namespace SDM {
 				}
 			}
 		}
-		ui->menu_Profiles->insertSeparator(ui->action_NewProfile);
 		unsavedChanges = false;
+		shrinkToFit();
 	}
 
 	void ProfileWindow::madeChange() {
 		unsavedChanges = true;
+	}
+
+	void ProfileWindow::addProfile() {
+		QJsonObject defaultTarget = {
+			{"active",  true},
+			{"url",     "https://www.google.com"},
+			{"element", ""}
+		};
+		QJsonObject defaultProfile = {
+			{"current",  true},
+			{"interval", 30},
+			{"targets",  QJsonArray{ defaultTarget }}
+		};
+		QString profileName = QString("Profile &%1").arg(profiles.size() + 1);
+		profiles.insert(profileName, defaultProfile);
+		QAction* profileAction = new QAction(profileName, ui->menu_Profiles);
+		profileAction->setCheckable(true);
+		profileActions->addAction(profileAction);
+		ui->menu_Profiles->insertAction(separator_Profile, profileAction);
+		saveProfiles();
 	}
 
 	void ProfileWindow::saveProfiles() {
